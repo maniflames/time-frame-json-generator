@@ -1,0 +1,45 @@
+{
+    "deliveries": [
+        {
+            "id": 12345,
+            "status": "somewhere on earth",
+            "departure_time": 12345,
+            "package": {
+                "id": 12345,
+                "dimentions": {
+                    "height": 12345,
+                    "width": 12345,
+                    "depth": 12345
+                },
+                "fragile": true
+            },
+            "consumer": {
+                "name": {
+                    "first": "Mani",
+                    "insertion": false,
+                    "last": "Flames"
+                },
+                "birthday": 12345,
+                "gender": "female",
+                "address": {
+                    "street": "Zwarte Dijk",
+                    "street_number": 37,
+                    "postial_code": "7776 PB",
+                    "city": "Slagharen",
+                    "country": "The Netherlands"
+                }
+            },
+            "driver": {
+                "id": 12345, 
+                "name": {
+                    "first": "Imani",
+                    "insertion": false,
+                    "last": "Dap"
+                },
+                "birthday": 12345,
+                "gender": "female",
+                "years_of_experience": 12345
+            }
+        }
+    ]
+}

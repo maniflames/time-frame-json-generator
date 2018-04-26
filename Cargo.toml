@@ -1,0 +1,8 @@
+[package]
+name = "timeframe"
+version = "0.0.1"
+authors = ["maniflames"]
+
+[dependencies]
+rustc-serialize = "0.3.24"
+rand = "0.4.2"
