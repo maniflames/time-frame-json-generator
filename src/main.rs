@@ -3,8 +3,7 @@ extern crate rand;
 
 use std::fs::File;
 use std::io::prelude::*;
-use rustc_serialize::Encodable;
-use rustc_serialize::json::{self, Encoder};
+use rustc_serialize::json::{self};
 use rand::Rng;
 use rand::distributions::{IndependentSample, Range}; 
 
@@ -13,7 +12,7 @@ use rand::distributions::{IndependentSample, Range};
 //have no access to real adresses 
 
 
-//I sould put all these structs in a seperate file because this is insane 😅
+//I should put all these structs in a seperate file because this is insane 😅
 #[derive(RustcDecodable, RustcEncodable, Debug)]
 struct PackageDimentions {
     height: i64,
@@ -28,12 +27,14 @@ struct Package {
     fragile: bool, 
 }
 
+#[derive(RustcDecodable, RustcEncodable, Debug)]
 struct Name {
     first: String,
     insertion: String,
     last: String,
 }
 
+#[derive(RustcDecodable, RustcEncodable, Debug)]
 struct Address {
     street: String,
     street_number: i64,
@@ -42,6 +43,7 @@ struct Address {
     country: String,
 }
 
+#[derive(RustcDecodable, RustcEncodable, Debug)]
 struct Consumer {
     id: i64,
     name: Name,
@@ -50,6 +52,7 @@ struct Consumer {
     address: Address,
 }
 
+#[derive(RustcDecodable, RustcEncodable, Debug)]
 struct Driver {
     id: i64,
     name: Name,
@@ -58,6 +61,7 @@ struct Driver {
     years_of_exprience: i64, 
 }
 
+#[derive(RustcDecodable, RustcEncodable, Debug)]
 struct Delivery {
     id: i64,
     status: String,
@@ -67,12 +71,13 @@ struct Delivery {
     driver: Driver,
 }
 
+#[derive(RustcDecodable, RustcEncodable, Debug)]
 struct Deliveries {
-    deliveries: vec<Delivery>,
+    deliveries: Vec<Delivery>,
 }
 
 fn main() {
-    generate_deliveries(); 
+    generate_deliveries(3); 
 }
 
 fn generate_package() -> Package {
@@ -95,24 +100,92 @@ fn generate_package() -> Package {
     return package; 
 }
 
-// fn generate_consumer() -> Consumer {
+fn pick_gender(random: bool) -> String {
+    if random {
+        return "Man".to_string();
+    } else {
+        return "Woman".to_string();
+    }
+}
 
-// }
+fn generate_consumer() -> Consumer {
+    let range = Range::new(10, 150);
+    let mut random = rand::thread_rng();
 
-// fn generate_driver() -> Driver {
+    let person_name = Name {
+        first: "Kerst".to_string(),
+        insertion: "".to_string(),
+        last: "Man".to_string(),
+    };
 
-// }
+    let person_address = Address {
+        street: "SmileStreet".to_string(),
+        street_number: 22,
+        postial_code: "3030 AB".to_string(),
+        city: "ChristCapital".to_string(),
+        country: "North Pole".to_string(),
+    };
 
-fn generate_deliveries() {
-    //put stuff from structs in an object 
-    let package = generate_package();
-    let input = vec![package];
+    let consumer = Consumer {
+        id: range.ind_sample(&mut random),
+        name: person_name,
+        birthday: range.ind_sample(&mut random), //this should eventually have the range of a timestamp
+        gender: pick_gender(random.gen::<bool>()),
+        address: person_address,
+    };
+
+    return consumer;
+}
+
+fn generate_driver() -> Driver {
+    let range = Range::new(10, 150);
+    let mut random = rand::thread_rng();
+
+    let person_name = Name {
+        first: "Rudolph".to_string(),
+        insertion: "the".to_string(),
+        last: "Rendeer".to_string(),
+    };
+
+    let driver = Driver {
+        id: range.ind_sample(&mut random),
+        name: person_name,
+        birthday: range.ind_sample(&mut random), 
+        gender: pick_gender(random.gen::<bool>()),
+        years_of_exprience: range.ind_sample(&mut random), 
+    };
+
+    return driver;
+}
+
+fn generate_deliveries(num_of_deliveries: i32) {
+    let range = Range::new(10, 150);
+    let mut random = rand::thread_rng();
+    let mut input : Vec<Delivery> = Vec::new();
+
+    for _x in 0..num_of_deliveries {
+        let gen_package = generate_package();
+        let gen_consumer = generate_consumer(); 
+        let gen_driver = generate_driver(); 
+
+        let delivery = Delivery {
+            id: range.ind_sample(&mut random),
+            status: "At hub".to_string(),
+            departure_time: range.ind_sample(&mut random),
+            package: gen_package, 
+            consumer: gen_consumer,
+            driver: gen_driver
+        };
+
+        input.push(delivery);
+    }
 
     encode_json(input);
 }
 
 //for now I'll use basic encoding instead of pretty encoding because I don't know how to write the file correctly
-fn encode_json(input: Vec<Package>) {
+//I could read the string until a new line character comes up, then append a line and move on to the next line
+fn encode_json(input: Vec<Delivery>) {
     let json = json::encode(&input).unwrap();
 
     create_json_file(json);
