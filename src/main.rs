@@ -3,17 +3,14 @@ extern crate rand;
 
 use std::fs::File;
 use std::io::prelude::*;
-use rustc_serialize::json::{self};
+use rustc_serialize::Encodable;
+use rustc_serialize::json::{self, Encoder};
 use rand::Rng;
 
 mod utils;
 mod package;
 mod consumer; 
 mod driver;
-
-//create a file with new adresses every once in a while by
-//Reverse Geocoding a city? This is a very hard thing to do when you
-//have no access to real adresses 
 
 #[derive(RustcDecodable, RustcEncodable, Debug)]
 struct Delivery {
@@ -36,7 +33,7 @@ fn main() {
 
 fn generate_deliveries(num_of_deliveries: i32) {
     let mut random = rand::thread_rng();
-    let mut input : Vec<Delivery> = Vec::new();
+    let mut input: Vec<Delivery> = Vec::new();
 
     for _x in 0..num_of_deliveries {
         let delivery = Delivery {
@@ -49,21 +46,28 @@ fn generate_deliveries(num_of_deliveries: i32) {
         };
 
         input.push(delivery);
-    }
+    };
 
-    encode_json(input);
+    let deliveries = Deliveries {
+        deliveries: input
+    };
+
+    encode_json(deliveries);
 }
 
-//for now I'll use basic encoding instead of pretty encoding because I don't know how to write the file correctly
-//I could read the string until a new line character comes up, then append a line and move on to the next line
-fn encode_json(input: Vec<Delivery>) {
-    let json = json::encode(&input).unwrap();
+//pretty printing: https://zsiciarz.github.io/24daysofrust/book/vol1/day6.html 
+fn encode_json(input: Deliveries) {
+   
+   let mut json = String::new(); 
+   {
+        let mut encoder = Encoder::new_pretty(&mut string);
+        input.encode(&mut encoder).expect("encoding error");
+   }
 
     create_json_file(json);
 }
 
 fn create_json_file(json: String) {
-    //TODO: look into fs::OpenOptions for appending lines into a file
     let mut file = File::create("MOCK_DATA.json").unwrap();
     file.write_all(json.as_bytes()).unwrap();
 

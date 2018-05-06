@@ -38,6 +38,15 @@ pub fn generate_name() -> Name {
     };
 }
 
+//create a file with new adresses every once in a while by
+//Reverse Geocoding a city? This is a very hard thing to do when you
+//have no access to real adresses 
+//collecting adresses will be the hardest part
+// this is probably the last thing we should try to automate
+
+//for now I'll use a file with adresses from a random place in the netherlands
+//gitignore both MOCK_DATA & the file containing adresses
+// a random adress can be picked from the json file 
 pub fn generate_address() -> Address {
     return Address {
         street: "SmileStreet".to_string(),
@@ -47,3 +56,5 @@ pub fn generate_address() -> Address {
         country: "North Pole".to_string(),
     };
 }
+
+//TODO: generate birthday 
