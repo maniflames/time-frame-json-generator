@@ -4,7 +4,7 @@ use rand::Rng;
 use utils;
 
 #[derive(RustcDecodable, RustcEncodable, Debug)]
-pub struct Consumer {
+pub struct Customer {
     id: i64,
     name: utils::Name,
     birthday: i64, 
@@ -12,10 +12,10 @@ pub struct Consumer {
     address: utils::Address,
 }
 
-pub fn generate() -> Consumer {
+pub fn generate() -> Customer {
     let mut random = rand::thread_rng();
 
-    return Consumer {
+    return Customer {
         id: random.gen_range(0, 100),
         name: utils::generate_name(),
         birthday: random.gen_range(0, 100), //this should eventually have the range of a timestamp

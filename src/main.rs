@@ -9,44 +9,41 @@ use rand::Rng;
 
 mod utils;
 mod package;
-mod consumer; 
+mod customer;
 mod driver;
 
 #[derive(RustcDecodable, RustcEncodable, Debug)]
-struct Delivery {
+struct DeliveryRound {
     id: i64,
-    status: String,
-    departure_time: i64,
-    package: package::Package, 
-    consumer: consumer::Consumer,
     driver: driver::Driver,
+    packages: Vec<package::Package>, 
+    status: String,
+    departure_time: i64, //this is the departure from the Hub 
 }
 
 #[derive(RustcDecodable, RustcEncodable, Debug)]
 struct Deliveries {
-    deliveries: Vec<Delivery>,
+    deliveries: Vec<DeliveryRound>,
 }
 
 fn main() {
-    generate_deliveries(3); 
+    generate_deliveries(100); 
 }
 
-fn generate_deliveries(num_of_deliveries: i32) {
+fn generate_deliveries(num_of_packages: i32) {
     let mut random = rand::thread_rng();
-    let mut input: Vec<Delivery> = Vec::new();
+    let mut input: Vec<DeliveryRound> = Vec::new();
 
-    for _x in 0..num_of_deliveries {
-        let delivery = Delivery {
-            id: random.gen_range(0, 100),
-            status: "At hub".to_string(),
-            departure_time: random.gen_range(0, 100),
-            package: package::generate(), 
-            consumer: consumer::generate(),
-            driver: driver::generate(),
-        };
-
-        input.push(delivery);
+    //TODO: spread the num of packages over the deliveries
+    let delivery = DeliveryRound {
+        id: random.gen_range(0, 100),
+        driver: driver::generate(),
+        packages: package::generate_vec(num_of_packages), 
+        status: "At hub".to_string(),
+        departure_time: 1526803200, //TODO: Make this variable 
     };
+
+    input.push(delivery);
 
     let deliveries = Deliveries {
         deliveries: input
@@ -60,7 +57,7 @@ fn encode_json(input: Deliveries) {
    
    let mut json = String::new(); 
    {
-        let mut encoder = Encoder::new_pretty(&mut string);
+        let mut encoder = Encoder::new_pretty(&mut json);
         input.encode(&mut encoder).expect("encoding error");
    }
 

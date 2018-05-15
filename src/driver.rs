@@ -20,6 +20,6 @@ pub fn generate() -> Driver {
         name: utils::generate_name(),
         birthday: random.gen_range(0, 100), 
         gender: utils::generate_gender(),
-        years_of_exprience: random.gen_range(0, 100),
+        years_of_exprience: random.gen_range(0, 70),
     };
 }
