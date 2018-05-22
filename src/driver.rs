@@ -9,7 +9,7 @@ pub struct Driver {
     name: utils::Name,
     birthday: i64, 
     gender: String,
-    years_of_exprience: i64, 
+    years_of_experience: i64, 
 }
 
 pub fn generate() -> Driver {
@@ -20,6 +20,6 @@ pub fn generate() -> Driver {
         name: utils::generate_name(),
         birthday: random.gen_range(0, 100), 
         gender: utils::generate_gender(),
-        years_of_exprience: random.gen_range(0, 70),
+        years_of_experience: random.gen_range(0, 70),
     };
 }

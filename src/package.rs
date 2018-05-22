@@ -33,7 +33,7 @@ pub fn generate() -> Package {
         delivery_delay: generate_delivery_delay(package_weight, is_fragile),
         weight: package_weight,
         fragile: is_fragile,
-        dimensions: generate_dimentions(),
+        dimensions: generate_dimensions(),
         customer: customer::generate(), //TODO: find a way to link multiple packages to the same customer
     };
 }
@@ -49,7 +49,7 @@ pub fn generate_vec(num_of_packages: i32) -> Vec<Package> {
     return packages;
 }
 
-fn generate_dimentions() -> Dimensions {
+fn generate_dimensions() -> Dimensions {
     let mut random = rand::thread_rng();
 
     return Dimensions {
