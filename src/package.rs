@@ -65,7 +65,7 @@ fn generate_delivery_delay(weight : i64, fragile : bool) -> i64 {
     let weight_delay : f64 = multiplier * casted_weight.powf(2.0); 
     let weight_delay_sec : i64 = weight_delay.round() as i64;
 
-    let mut fragile_delay;
+    let fragile_delay;
 
     //NOTE: this could obviously be a match 
     if fragile {

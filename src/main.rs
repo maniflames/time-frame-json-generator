@@ -30,20 +30,35 @@ fn main() {
     generate_deliveries(100); 
 }
 
+
+  //TODO: figure out how to generate the right amount of deliveries based on the number of packages 
 fn generate_deliveries(num_of_packages: i32) {
     let mut random = rand::thread_rng();
     let mut input: Vec<DeliveryRound> = Vec::new();
 
-    //TODO: spread the num of packages over the deliveries
-    let delivery = DeliveryRound {
-        id: random.gen_range(0, 100),
-        driver: driver::generate(),
-        packages: package::generate_vec(num_of_packages), 
-        status: "At hub".to_string(),
-        departure_time: 1526803200, //TODO: Make this variable 
-    };
+    let num_of_deliveries = random.gen_range(1, 5);
+    let num_rest_packages = num_of_packages % num_of_deliveries;
+    let num_packages_per_delivery = num_of_packages / num_of_deliveries;
 
-    input.push(delivery);
+    //this could be refactored into a recursive solution / a factory function?
+    for _x in 0..num_of_deliveries {
+        let input_packages;
+        if _x == num_of_deliveries {
+            input_packages = package::generate_vec(num_packages_per_delivery + num_rest_packages);
+        } else {
+            input_packages = package::generate_vec(num_packages_per_delivery );
+        }
+
+        let delivery = DeliveryRound {
+            id: random.gen_range(0, 100),
+            driver: driver::generate(),
+            packages: input_packages, 
+            status: "At hub".to_string(),
+            departure_time: 1526803200, //TODO: Make this variable 
+        };
+
+        input.push(delivery);
+    }
 
     let deliveries = Deliveries {
         deliveries: input
