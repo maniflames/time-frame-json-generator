@@ -26,27 +26,28 @@ struct Deliveries {
     deliveries: Vec<DeliveryRound>,
 }
 
-fn main() {
-    generate_deliveries(100); 
+fn main() { 
+    generate_deliveries(250); 
 }
-
 
   //TODO: figure out how to generate the right amount of deliveries based on the number of packages 
 fn generate_deliveries(num_of_packages: i32) {
     let mut random = rand::thread_rng();
     let mut input: Vec<DeliveryRound> = Vec::new();
+    let mut package_ids: Vec<i64> = utils::generate_unique_ids(num_of_packages as usize); 
 
-    let num_of_deliveries = random.gen_range(1, 5);
+    let num_of_deliveries = random.gen_range(4, 8);
     let num_rest_packages = num_of_packages % num_of_deliveries;
     let num_packages_per_delivery = num_of_packages / num_of_deliveries;
-
-    //this could be refactored into a recursive solution / a factory function?
+    
     for _x in 0..num_of_deliveries {
         let input_packages;
-        if _x == num_of_deliveries {
-            input_packages = package::generate_vec(num_packages_per_delivery + num_rest_packages);
+        if _x + 1 == num_of_deliveries {
+            input_packages = package::generate_vec(num_packages_per_delivery + num_rest_packages, &package_ids);
         } else {
-            input_packages = package::generate_vec(num_packages_per_delivery );
+            let mut package_ids_len = package_ids.len();
+            let saved_package_ids: Vec<i64> = package_ids.split_off(&package_ids_len - (num_packages_per_delivery as usize));
+            input_packages = package::generate_vec(num_packages_per_delivery, &saved_package_ids);
         }
 
         let delivery = DeliveryRound {
@@ -60,6 +61,7 @@ fn generate_deliveries(num_of_packages: i32) {
         input.push(delivery);
     }
 
+
     let deliveries = Deliveries {
         deliveries: input
     };
@@ -68,8 +70,7 @@ fn generate_deliveries(num_of_packages: i32) {
 }
 
 //pretty printing: https://zsiciarz.github.io/24daysofrust/book/vol1/day6.html 
-fn encode_json(input: Deliveries) {
-   
+fn encode_json(input: Deliveries) {  
    let mut json = String::new(); 
    {
         let mut encoder = Encoder::new_pretty(&mut json);

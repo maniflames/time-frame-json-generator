@@ -58,3 +58,27 @@ pub fn generate_address() -> Address {
 //TODO: generate_departure_time
 
 //TODO: create search function for find package by ID for carin?? 
+
+
+pub fn generate_unique_ids(num_of_ids: usize) -> Vec<i64> {
+    let mut ids: Vec<i64> = Vec::new(); 
+    ids.push(90000); //If the vec is emtpy the 1st will never match
+
+    while ids.len() < num_of_ids {
+        let new_id = generate_unique_id(&ids);
+        ids.push(new_id); 
+   }     
+
+   return ids;  
+}
+
+fn generate_unique_id(existing_ids: &Vec<i64>) -> i64 {
+    let mut random = rand::thread_rng();
+    let new_id: i64 = random.gen_range(100000000000, 999999999999); 
+
+    if existing_ids.iter().position(|&x| x == new_id) == None {
+        return new_id; 
+    } else {
+        return generate_unique_id(&existing_ids);
+    }
+}

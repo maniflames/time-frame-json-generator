@@ -6,7 +6,7 @@ use customer;
 #[derive(RustcDecodable, RustcEncodable, Debug)]
 pub struct Package {
     id: i64,
-    delivery_delay: i64, //minutes
+    delivery_delay: i64,
     //arrival_time: i64, //TODO: Make this happen!!
     weight: i64,
     fragile: bool, 
@@ -21,15 +21,13 @@ pub struct Dimensions {
     depth: i64,
 }
 
-pub fn generate() -> Package {
-    //find out dimention ranges & structure of package ID's from fedex mock data
+pub fn generate(package_id: i64) -> Package {
     let mut random = rand::thread_rng();
-
-    let package_weight : i64 = random.gen_range(0, 68); //kilos
+    let package_weight : i64 = random.gen_range(0, 68); 
     let is_fragile : bool = random.gen::<bool>();
 
     return Package {
-        id: random.gen_range(0, 250),
+        id: package_id,
         delivery_delay: generate_delivery_delay(package_weight, is_fragile),
         weight: package_weight,
         fragile: is_fragile,
@@ -38,11 +36,11 @@ pub fn generate() -> Package {
     };
 }
 
-pub fn generate_vec(num_of_packages: i32) -> Vec<Package> {
+pub fn generate_vec(num_of_packages: i32, package_ids: &Vec<i64>) -> Vec<Package> {
     let mut packages : Vec<Package> = Vec::new();
 
     for _x in 0..num_of_packages {
-        let package = generate();
+        let package = generate(package_ids[_x as usize]);
         packages.push(package);
     }
 
@@ -53,9 +51,9 @@ fn generate_dimensions() -> Dimensions {
     let mut random = rand::thread_rng();
 
     return Dimensions {
-        height: random.gen_range(0, 250),
-        width: random.gen_range(0, 50),
-        depth: random.gen_range(0, 100),
+        height: random.gen_range(0, 274),
+        width: random.gen_range(0, 274),
+        depth: random.gen_range(0, 274),
     };
 }
 
@@ -67,7 +65,7 @@ fn generate_delivery_delay(weight : i64, fragile : bool) -> i64 {
 
     let fragile_delay;
 
-    //NOTE: this could obviously be a match 
+    //NOTE: this should obviously be a match 
     if fragile {
         fragile_delay = 1;
     } else {
