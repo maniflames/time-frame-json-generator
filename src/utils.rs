@@ -1,6 +1,10 @@
 extern crate rand; 
 
+use std::fs::File;
+use std::io::Read; 
+use rustc_serialize::json;
 use rand::Rng;
+
 
 #[derive(RustcDecodable, RustcEncodable, Debug)]
 pub struct Name {
@@ -9,13 +13,23 @@ pub struct Name {
     last: String,
 }
 
-#[derive(RustcDecodable, RustcEncodable, Debug)]
+#[derive(RustcDecodable, RustcEncodable, Debug, Clone)]
 pub struct Address {
     street: String,
     street_number: i64,
     postal_code: String,
     city: String,
     country: String,
+}
+
+#[derive(RustcDecodable, RustcEncodable, Debug)]
+pub struct AddressBuf {
+    pub val: Address
+}
+
+#[derive(RustcDecodable, RustcEncodable, Debug)]
+struct AddressList {
+    addresses: Vec<Address>,
 }
 
 pub fn generate_gender() -> String {
@@ -34,23 +48,20 @@ pub fn generate_name() -> Name {
     };
 }
 
-//create a file with new adresses every once in a while by
-//Reverse Geocoding a city? This is a very hard thing to do when you
-//have no access to real adresses 
-//collecting adresses will be the hardest part
-// this is probably the last thing we should try to automate
-
-//for now I'll use a file with adresses from a random place in the netherlands
-//gitignore both MOCK_DATA & the file containing adresses
-// a random adress can be picked from the json file 
+//Don't know how to return, moving this
 pub fn generate_address() -> Address {
-    return Address {
-        street: "SmileStreet".to_string(),
-        street_number: 22,
-        postal_code: "3030 AB".to_string(),
-        city: "ChristCapital".to_string(),
-        country: "North Pole".to_string(),
-    };
+    let mut f: File = File::open("address_list.json").unwrap(); 
+    let mut json = String::new();
+    f.read_to_string(&mut json);
+
+    let address_list_json: AddressList = json::decode(&json).unwrap(); 
+    let address_list: Vec<Address> = address_list_json.addresses; 
+
+    let index = rand::thread_rng().gen_range(0, address_list.len()); 
+
+    //you can't return an index value or a reference so creating a new 'instance' is the best way to go 
+    //this is a memory thing I really have to learn
+    return address_list[index].clone(); 
 }
 
 //TODO: generate birthday
@@ -58,7 +69,6 @@ pub fn generate_address() -> Address {
 //TODO: generate_departure_time
 
 //TODO: create search function for find package by ID for carin?? 
-
 
 pub fn generate_unique_ids(num_of_ids: usize) -> Vec<i64> {
     let mut ids: Vec<i64> = Vec::new(); 

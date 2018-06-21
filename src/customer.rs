@@ -14,7 +14,6 @@ pub struct Customer {
 
 pub fn generate() -> Customer {
     let mut random = rand::thread_rng();
-
     return Customer {
         id: random.gen_range(0, 100),
         name: utils::generate_name(),

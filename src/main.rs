@@ -55,12 +55,11 @@ fn generate_deliveries(num_of_packages: i32) {
             driver: driver::generate(),
             packages: input_packages, 
             status: "At hub".to_string(),
-            departure_time: 1526803200, //TODO: Make this variable 
+            departure_time: 1529977246, //TODO: Make this variable 
         };
 
         input.push(delivery);
     }
-
 
     let deliveries = Deliveries {
         deliveries: input
